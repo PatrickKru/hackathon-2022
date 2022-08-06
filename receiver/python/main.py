@@ -161,13 +161,14 @@ async def test():
     if device is not None:
         rssi = device.rssi
 
+    is_printed = False
     async with BleakClient(address) as client:
         while client.is_connected:
+            if is_printed:
+                continue
             value = await client.read_gatt_char(characteristic_uuid)
             print(f"Value: {value}, Rssi: {rssi}")
-        # await client.start_notify(
-        #     characteristic_uuid, notification_handler,
-        # )
+            is_printed = True
 
 
 async def test2():
