@@ -20,6 +20,7 @@ characteristic_uuid = "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 period_uuid = ""
 message_size_uuid = ""
 
+rssi = 0
 
 def print_device(device: BLEDevice):
     print("address:", device.address)
@@ -155,14 +156,15 @@ def notification_handler(sender, data):
 #
 
 async def test():
-    # device = await BleakScanner.find_device_by_address(address, timeout=TIMEOUT)
+    global rssi
+    device = await BleakScanner.find_device_by_address(address, timeout=TIMEOUT)
+    if device is not None:
+        rssi = device.rssi
 
-    # BleakScanner.register_detection_callback(callback=lambda device, data :
-    #                                          print(device, data))
     async with BleakClient(address) as client:
         while client.is_connected:
             value = await client.read_gatt_char(characteristic_uuid)
-            print(f"Value: {value}, Rssi: x")
+            print(f"Value: {value}, Rssi: {rssi}")
         # await client.start_notify(
         #     characteristic_uuid, notification_handler,
         # )
